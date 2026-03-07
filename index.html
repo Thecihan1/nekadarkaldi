@@ -1,23 +1,486 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>Ne Kadar Kaldı</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bilgi Avcisi</title>
+<style>
+  :root {
+    --bg: #0a0f1e;
+    --surface: #111827;
+    --card: #151d2e;
+    --border: #1e2d45;
+    --accent: #7ec8e3;
+    --accent2: #a78bfa;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --green: #34d399;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+  }
+
+  header {
+    padding: 36px 20px 28px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  .logo-icon {
+    width: 46px; height: 46px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .logo h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+  }
+  header p { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+  .back-link {
+    display: inline-block;
+    color: var(--muted);
+    font-size: 0.82rem;
+    text-decoration: none;
+    margin-top: 10px;
+    transition: color .15s;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  .search-wrapper {
+    max-width: 700px;
+    margin: 40px auto 0;
+    padding: 0 20px;
+  }
+  .search-box {
+    display: flex;
+    gap: 8px;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 8px 10px 8px 20px;
+    transition: border-color .2s;
+  }
+  .search-box:focus-within { border-color: var(--accent); }
+  .search-box input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-size: 1rem;
+    padding: 6px 0;
+  }
+  .search-box input::placeholder { color: var(--muted); }
+  .btn-search {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 10px;
+    color: #0a0f1e;
+    font-size: 0.88rem;
+    font-weight: 700;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: opacity .15s;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+  }
+  .btn-search:hover { opacity: .85; }
+  .btn-search:disabled { opacity: .4; cursor: not-allowed; }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .chip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+
+  .results-wrapper {
+    max-width: 700px;
+    margin: 36px auto 70px;
+    padding: 0 20px;
+  }
+
+  .loading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .result-header span {
+    color: var(--accent);
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+  .source-badge {
+    background: rgba(126,200,227,.1);
+    border: 1px solid rgba(126,200,227,.25);
+    color: var(--accent);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    padding: 3px 10px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: border-color .2s, transform .15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+    border-radius: 3px 0 0 3px;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card:hover::before { opacity: 1; }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .card-num {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #0a0f1e;
+    border-radius: 8px;
+    min-width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .card-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 1.35;
+    margin-bottom: 3px;
+  }
+  .card-title a {
+    color: var(--text);
+    text-decoration: none;
+    transition: color .15s;
+  }
+  .card-title a:hover { color: var(--accent); }
+  .card-url {
+    color: var(--green);
+    font-size: 0.77rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 480px;
+  }
+
+  .card-desc {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #94a3b8;
+    border-left: 2px solid var(--border);
+    padding-left: 12px;
+    margin-bottom: 10px;
+  }
+
+  .card-content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 0.84rem;
+    line-height: 1.65;
+    color: #b0bec5;
+    max-height: 160px;
+    overflow: hidden;
+    position: relative;
+    transition: max-height .35s ease;
+  }
+  .card-content.open { max-height: 2000px; }
+  .fade-out {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 48px;
+    background: linear-gradient(transparent, var(--surface));
+    pointer-events: none;
+    transition: opacity .3s;
+  }
+  .card-content.open .fade-out { opacity: 0; }
+  .btn-more {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    padding: 4px 12px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all .15s;
+  }
+  .btn-more:hover { border-color: var(--accent); color: var(--accent); }
+
+  .tags { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag {
+    background: rgba(167,139,250,.1);
+    border: 1px solid rgba(167,139,250,.25);
+    color: var(--accent2);
+    border-radius: 6px;
+    font-size: 0.72rem;
+    padding: 2px 9px;
+  }
+
+  .wiki-section {
+    background: linear-gradient(135deg, rgba(126,200,227,.07), rgba(167,139,250,.07));
+    border: 1px solid rgba(126,200,227,.2);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .wiki-label {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .wiki-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .wiki-text {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: #94a3b8;
+  }
+  .wiki-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--accent);
+    font-size: 0.82rem;
+    text-decoration: none;
+  }
+  .wiki-link:hover { text-decoration: underline; }
+
+  .error-box {
+    background: rgba(239,68,68,.1);
+    border: 1px solid rgba(239,68,68,.3);
+    border-radius: 12px;
+    color: #fca5a5;
+    padding: 16px 20px;
+    font-size: 0.9rem;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 80px 0;
+    color: var(--muted);
+  }
+  .empty .icon { font-size: 3.5rem; opacity: .3; margin-bottom: 16px; }
+  .empty p { font-size: 1rem; }
+  .empty small { font-size: 0.82rem; opacity: .6; display: block; margin-top: 6px; }
+</style>
 </head>
 <body>
-    <h1>Önemli Günlere Kalan Süre</h1>
 
-    <div class="event">
-        <h2>Sınav</h2>
-        <p id="countdown-exam"></p>
-    </div>
+<header>
+  <div class="logo">
+    <div class="logo-icon">&#128270;</div>
+    <h1>BILGI AVCISI</h1>
+  </div>
+  <p>Web'i tarayarak istedigin bilgiyi bul</p>
+  <a href="index.html" class="back-link">&#8592; Ana Sayfaya Don</a>
+</header>
 
-    <div class="event">
-        <h2>Tatil</h2>
-        <p id="countdown-holiday"></p>
-    </div>
+<div class="search-wrapper">
+  <div class="search-box">
+    <input type="text" id="q" placeholder="Neyi ogrenimek istiyorsun?..." autocomplete="off" />
+    <button class="btn-search" id="searchBtn" onclick="search()">Ara &#8594;</button>
+  </div>
+  <div class="chips">
+    <span class="chip" onclick="quick('yapay zeka nedir')">Yapay Zeka</span>
+    <span class="chip" onclick="quick('kuantum bilgisayar')">Kuantum Bilgisayar</span>
+    <span class="chip" onclick="quick('kara delik')">Kara Delik</span>
+    <span class="chip" onclick="quick('blockchain teknolojisi')">Blockchain</span>
+    <span class="chip" onclick="quick('Mars gezegeni')">Mars</span>
+    <span class="chip" onclick="quick('DNA nedir')">DNA</span>
+  </div>
+</div>
 
-    <script src="script.js"></script>
+<div class="results-wrapper" id="out">
+  <div class="empty">
+    <div class="icon">&#128270;</div>
+    <p>Bir konu yaz ve aramaya basla</p>
+    <small>Wikipedia ve web kaynaklarindan bilgi toplanir</small>
+  </div>
+</div>
+
+<script>
+const out = document.getElementById('out');
+const qInput = document.getElementById('q');
+const btn = document.getElementById('searchBtn');
+
+qInput.addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
+
+function quick(q) { qInput.value = q; search(); }
+
+async function search() {
+  const query = qInput.value.trim();
+  if (!query) return;
+  btn.disabled = true;
+  btn.textContent = 'Araniyor...';
+  out.innerHTML = `<div class="loading"><div class="spinner"></div><span>Araniyor: <strong>${esc(query)}</strong></span></div>`;
+
+  try {
+    const [wiki, ddg] = await Promise.allSettled([
+      fetchWikipedia(query),
+      fetchDDG(query)
+    ]);
+
+    let html = '';
+
+    if (wiki.status === 'fulfilled' && wiki.value) {
+      html += buildWikiCard(wiki.value);
+    }
+
+    if (ddg.status === 'fulfilled' && ddg.value && ddg.value.length > 0) {
+      html += `<div class="result-header"><span>&#128279; Web Sonuclari (${ddg.value.length})</span><span class="source-badge">DuckDuckGo</span></div>`;
+      ddg.value.forEach((r, i) => { html += buildCard(r, i + 1); });
+    }
+
+    if (!html) {
+      html = `<div class="error-box">Sonuc bulunamadi. Farkli bir kelime deneyin.</div>`;
+    }
+
+    out.innerHTML = html;
+  } catch(e) {
+    out.innerHTML = `<div class="error-box">Bir hata olustu: ${esc(e.message)}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Ara \u2192';
+  }
+}
+
+async function fetchWikipedia(query) {
+  const lang = detectLang(query) ? 'tr' : 'en';
+  const url = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    const url2 = `https://tr.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=1&format=json&origin=*`;
+    const res2 = await fetch(url2);
+    const data2 = await res2.json();
+    if (data2[1] && data2[1][0]) {
+      const title = data2[1][0];
+      const res3 = await fetch(`https://tr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+      if (res3.ok) return await res3.json();
+    }
+    return null;
+  }
+  return await res.json();
+}
+
+async function fetchDDG(query) {
+  const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+  const proxy = `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
+  const res = await fetch(proxy);
+  const data = await res.json();
+  const results = [];
+  if (data.RelatedTopics) {
+    for (const t of data.RelatedTopics) {
+      if (t.FirstURL && t.Text) {
+        results.push({ title: t.Text.split(' - ')[0] || t.Text, url: t.FirstURL, desc: t.Text });
+        if (results.length >= 5) break;
+      }
+    }
+  }
+  return results;
+}
+
+function detectLang(q) {
+  return /[ğüşıöçĞÜŞİÖÇ]/.test(q) || /\b(nedir|nasıl|ne|kim|hangi|kaç)\b/i.test(q);
+}
+
+function buildWikiCard(w) {
+  return `
+    <div class="wiki-section">
+      <div class="wiki-label">&#128218; Wikipedia Ozeti</div>
+      <div class="wiki-title">${esc(w.title || '')}</div>
+      <div class="wiki-text">${esc(w.extract || w.description || '')}</div>
+      ${w.content_urls ? `<a class="wiki-link" href="${esc(w.content_urls.desktop.page)}" target="_blank" rel="noopener">Wikipedia'da Tam Makaleyi Oku &#8599;</a>` : ''}
+    </div>`;
+}
+
+function buildCard(r, n) {
+  const hasDesc = r.desc && r.desc.length > 30;
+  return `
+    <div class="card">
+      <div class="card-top">
+        <div class="card-num">${n}</div>
+        <div style="min-width:0">
+          <div class="card-title"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a></div>
+          <div class="card-url">${esc(r.url)}</div>
+        </div>
+      </div>
+      ${hasDesc ? `<div class="card-desc">${esc(r.desc)}</div>` : ''}
+      <div class="tags"><span class="tag">Kaynak #${n}</span></div>
+    </div>`;
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
 </body>
 </html>
