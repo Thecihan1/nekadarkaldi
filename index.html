@@ -3,484 +3,598 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bilgi Avcisi</title>
+<title>Cihan | Portfoy</title>
 <style>
   :root {
-    --bg: #0a0f1e;
-    --surface: #111827;
-    --card: #151d2e;
-    --border: #1e2d45;
-    --accent: #7ec8e3;
-    --accent2: #a78bfa;
+    --bg: #080b14;
+    --surface: #0f1220;
+    --card: #141826;
+    --border: #1e253a;
+    --accent: #6c63ff;
+    --accent2: #00d4aa;
     --text: #e2e8f0;
     --muted: #64748b;
-    --green: #34d399;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Segoe UI', system-ui, sans-serif;
-    min-height: 100vh;
   }
 
-  header {
-    padding: 36px 20px 28px;
-    text-align: center;
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(8,11,20,.85);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 62px;
+    display: flex; align-items: center; justify-content: space-between;
   }
-  .logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 8px;
-  }
-  .logo-icon {
-    width: 46px; height: 46px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px;
-  }
-  .logo h1 {
-    font-size: 2rem;
-    font-weight: 700;
+  .nav-logo {
+    font-size: 1.15rem; font-weight: 800; letter-spacing: 1px;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: 2px;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
-  header p { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
-  .back-link {
-    display: inline-block;
-    color: var(--muted);
-    font-size: 0.82rem;
-    text-decoration: none;
-    margin-top: 10px;
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    color: var(--muted); font-size: .88rem; text-decoration: none;
     transition: color .15s;
   }
-  .back-link:hover { color: var(--accent); }
+  .nav-links a:hover { color: var(--text); }
 
-  .search-wrapper {
-    max-width: 700px;
-    margin: 40px auto 0;
-    padding: 0 20px;
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 100px 20px 60px;
+    position: relative;
+    overflow: hidden;
   }
-  .search-box {
-    display: flex;
-    gap: 8px;
-    background: var(--card);
-    border: 1.5px solid var(--border);
-    border-radius: 16px;
-    padding: 8px 10px 8px 20px;
-    transition: border-color .2s;
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(108,99,255,.12) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+    pointer-events: none;
   }
-  .search-box:focus-within { border-color: var(--accent); }
-  .search-box input {
-    flex: 1;
-    background: none;
-    border: none;
-    outline: none;
-    color: var(--text);
-    font-size: 1rem;
-    padding: 6px 0;
+  .hero-content { position: relative; z-index: 1; }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(108,99,255,.15);
+    border: 1px solid rgba(108,99,255,.3);
+    color: var(--accent);
+    border-radius: 20px;
+    font-size: .78rem; font-weight: 600;
+    padding: 5px 16px; letter-spacing: .5px;
+    margin-bottom: 24px;
   }
-  .search-box input::placeholder { color: var(--muted); }
-  .btn-search {
+  .hero-title {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 800; line-height: 1.15; margin-bottom: 20px;
+  }
+  .hero-title span {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-desc {
+    color: var(--muted); font-size: 1.05rem; max-width: 520px;
+    margin: 0 auto 36px; line-height: 1.7;
+  }
+  .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
     background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border: none;
-    border-radius: 10px;
-    color: #0a0f1e;
-    font-size: 0.88rem;
-    font-weight: 700;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: opacity .15s;
-    white-space: nowrap;
-    letter-spacing: 0.5px;
+    border: none; border-radius: 12px; color: #fff;
+    font-size: .9rem; font-weight: 700; padding: 13px 28px;
+    cursor: pointer; text-decoration: none; transition: opacity .15s;
   }
-  .btn-search:hover { opacity: .85; }
-  .btn-search:disabled { opacity: .4; cursor: not-allowed; }
+  .btn-primary:hover { opacity: .85; }
+  .btn-outline {
+    background: none;
+    border: 1px solid var(--border); border-radius: 12px; color: var(--muted);
+    font-size: .9rem; padding: 13px 28px; cursor: pointer;
+    text-decoration: none; transition: all .15s;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
 
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
+  /* SECTIONS */
+  section { padding: 90px 20px; }
+  .section-inner { max-width: 900px; margin: 0 auto; }
+  .section-label {
+    color: var(--accent2); font-size: .78rem; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;
   }
-  .chip {
-    background: var(--card);
+  .section-title {
+    font-size: 2rem; font-weight: 800; margin-bottom: 14px;
+  }
+  .section-desc { color: var(--muted); font-size: .95rem; line-height: 1.7; max-width: 560px; }
+
+  /* ABOUT */
+  #about { background: var(--surface); }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 50px; align-items: center; margin-top: 48px;
+  }
+  @media(max-width:680px){ .about-grid { grid-template-columns:1fr; } }
+  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px;
+  }
+  .stat-num {
+    font-size: 2rem; font-weight: 800;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .stat-label { color: var(--muted); font-size: .82rem; margin-top: 4px; }
+
+  /* SKILLS */
+  #skills { background: var(--bg); }
+  .skills-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
+    gap: 14px; margin-top: 48px;
+  }
+  .skill-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 14px;
+    text-align: center; transition: border-color .2s, transform .15s;
+  }
+  .skill-item:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .skill-icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .skill-name { font-size: .8rem; color: var(--muted); font-weight: 600; }
+
+  /* PROJECTS */
+  #projects { background: var(--surface); }
+  .projects-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+    gap: 20px; margin-top: 48px;
+  }
+  .project-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+    transition: border-color .2s, transform .15s;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .project-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .project-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, rgba(108,99,255,.2), rgba(0,212,170,.2));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .project-name { font-weight: 700; font-size: .98rem; }
+  .project-desc { color: var(--muted); font-size: .83rem; line-height: 1.55; flex: 1; }
+  .project-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .ptag {
+    background: rgba(108,99,255,.12); border: 1px solid rgba(108,99,255,.25);
+    color: var(--accent); border-radius: 6px; font-size: .7rem;
+    padding: 2px 8px; font-weight: 600;
+  }
+
+  /* CONTACT */
+  #contact { background: var(--bg); text-align: center; }
+  #contact .section-desc { margin: 0 auto 36px; }
+  .contact-links { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .contact-link {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; color: var(--muted);
+    font-size: .88rem; padding: 12px 22px;
+    text-decoration: none; transition: all .15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+  footer {
+    border-top: 1px solid var(--border);
+    text-align: center; padding: 24px;
+    color: var(--muted); font-size: .8rem;
+  }
+
+  /* ===================== CHAT WIDGET ===================== */
+  #ba-bubble {
+    position: fixed; bottom: 28px; right: 28px;
+    width: 58px; height: 58px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; cursor: pointer;
+    box-shadow: 0 4px 24px rgba(108,99,255,.5);
+    z-index: 9999;
+    transition: transform .2s, box-shadow .2s;
+    user-select: none;
+  }
+  #ba-bubble:hover { transform: scale(1.1); box-shadow: 0 6px 32px rgba(108,99,255,.7); }
+  #ba-bubble.open { background: linear-gradient(135deg, #ff5c7c, var(--accent)); }
+
+  #ba-panel {
+    position: fixed; bottom: 100px; right: 28px;
+    width: 370px; max-height: 560px;
+    background: #0f1220;
     border: 1px solid var(--border);
     border-radius: 20px;
-    color: var(--muted);
-    font-size: 0.8rem;
-    padding: 5px 14px;
-    cursor: pointer;
-    transition: all .15s;
-  }
-  .chip:hover { border-color: var(--accent); color: var(--accent); }
-
-  .results-wrapper {
-    max-width: 700px;
-    margin: 36px auto 70px;
-    padding: 0 20px;
-  }
-
-  .loading {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-  .spinner {
-    width: 20px; height: 20px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin .7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .result-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  .result-header span {
-    color: var(--accent);
-    font-size: 0.88rem;
-    font-weight: 600;
-  }
-  .source-badge {
-    background: rgba(126,200,227,.1);
-    border: 1px solid rgba(126,200,227,.25);
-    color: var(--accent);
-    border-radius: 8px;
-    font-size: 0.75rem;
-    padding: 3px 10px;
-  }
-
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 16px;
-    transition: border-color .2s, transform .15s;
-    position: relative;
-    overflow: hidden;
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0; width: 3px;
-    background: linear-gradient(180deg, var(--accent), var(--accent2));
-    border-radius: 3px 0 0 3px;
-    opacity: 0;
-    transition: opacity .2s;
-  }
-  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .card:hover::before { opacity: 1; }
-
-  .card-top {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 12px;
-  }
-  .card-num {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #0a0f1e;
-    border-radius: 8px;
-    min-width: 28px; height: 28px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.78rem;
-    font-weight: 800;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-  .card-title {
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--text);
-    line-height: 1.35;
-    margin-bottom: 3px;
-  }
-  .card-title a {
-    color: var(--text);
-    text-decoration: none;
-    transition: color .15s;
-  }
-  .card-title a:hover { color: var(--accent); }
-  .card-url {
-    color: var(--green);
-    font-size: 0.77rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 480px;
-  }
-
-  .card-desc {
-    font-size: 0.88rem;
-    line-height: 1.6;
-    color: #94a3b8;
-    border-left: 2px solid var(--border);
-    padding-left: 12px;
-    margin-bottom: 10px;
-  }
-
-  .card-content {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-size: 0.84rem;
-    line-height: 1.65;
-    color: #b0bec5;
-    max-height: 160px;
-    overflow: hidden;
-    position: relative;
-    transition: max-height .35s ease;
-  }
-  .card-content.open { max-height: 2000px; }
-  .fade-out {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 48px;
-    background: linear-gradient(transparent, var(--surface));
+    display: flex; flex-direction: column;
+    box-shadow: 0 12px 48px rgba(0,0,0,.8);
+    z-index: 9998; overflow: hidden;
+    opacity: 0; transform: translateY(20px) scale(.96);
     pointer-events: none;
-    transition: opacity .3s;
+    transition: opacity .25s, transform .25s;
   }
-  .card-content.open .fade-out { opacity: 0; }
-  .btn-more {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-size: 0.78rem;
-    padding: 4px 12px;
-    cursor: pointer;
-    margin-top: 8px;
-    transition: all .15s;
-  }
-  .btn-more:hover { border-color: var(--accent); color: var(--accent); }
+  #ba-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
 
-  .tags { margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
-  .tag {
-    background: rgba(167,139,250,.1);
-    border: 1px solid rgba(167,139,250,.25);
-    color: var(--accent2);
-    border-radius: 6px;
-    font-size: 0.72rem;
-    padding: 2px 9px;
+  #ba-header {
+    background: linear-gradient(135deg, #080b14, #0f1220);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
   }
+  #ba-header-left { display: flex; align-items: center; gap: 10px; }
+  #ba-avatar {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+  #ba-title { font-size: .9rem; font-weight: 700; color: var(--text); }
+  #ba-sub { font-size: .7rem; color: var(--accent2); margin-top: 1px; }
+  #ba-close {
+    background: none; border: none; color: var(--muted);
+    font-size: 16px; cursor: pointer; padding: 4px;
+    border-radius: 6px; transition: color .15s, background .15s; line-height: 1;
+  }
+  #ba-close:hover { color: var(--text); background: var(--border); }
 
-  .wiki-section {
-    background: linear-gradient(135deg, rgba(126,200,227,.07), rgba(167,139,250,.07));
-    border: 1px solid rgba(126,200,227,.2);
-    border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 20px;
+  #ba-messages {
+    flex: 1; overflow-y: auto; padding: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
   }
-  .wiki-label {
-    color: var(--accent);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
+  #ba-messages::-webkit-scrollbar { width: 4px; }
+  #ba-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .ba-msg { display: flex; }
+  .ba-msg.ba-user { justify-content: flex-end; }
+  .ba-bubble-msg {
+    max-width: 88%; padding: 10px 14px;
+    border-radius: 16px; font-size: .84rem;
+    line-height: 1.55; word-break: break-word;
   }
-  .wiki-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: var(--text);
+  .ba-user .ba-bubble-msg {
+    background: linear-gradient(135deg, var(--accent), #5a52e0);
+    color: #fff; border-bottom-right-radius: 4px;
   }
-  .wiki-text {
-    font-size: 0.88rem;
-    line-height: 1.65;
-    color: #94a3b8;
+  .ba-bot .ba-bubble-msg {
+    background: var(--card); color: #c8cdd8;
+    border: 1px solid var(--border); border-bottom-left-radius: 4px;
   }
-  .wiki-link {
+  .ba-wiki-label {
     display: inline-block;
-    margin-top: 10px;
-    color: var(--accent);
-    font-size: 0.82rem;
-    text-decoration: none;
+    background: rgba(0,212,170,.12); border: 1px solid rgba(0,212,170,.25);
+    color: var(--accent2); border-radius: 5px;
+    font-size: .67rem; padding: 1px 7px; margin-bottom: 7px;
+    font-weight: 700; letter-spacing: .5px;
   }
-  .wiki-link:hover { text-decoration: underline; }
+  .ba-wiki-title { font-weight: 700; color: var(--text); font-size: .88rem; margin-bottom: 6px; }
+  .ba-wiki-text { color: #94a3b8; font-size: .82rem; line-height: 1.6; }
+  .ba-wiki-link {
+    display: inline-block; margin-top: 8px;
+    color: var(--accent); font-size: .78rem; text-decoration: none;
+  }
+  .ba-wiki-link:hover { text-decoration: underline; }
+  .ba-result-item {
+    padding: 8px 10px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 10px; margin-top: 8px;
+  }
+  .ba-result-item a {
+    color: #7ec8e3; font-size: .81rem; font-weight: 600;
+    text-decoration: none; display: block; margin-bottom: 3px;
+  }
+  .ba-result-item a:hover { text-decoration: underline; }
+  .ba-result-desc { color: var(--muted); font-size: .76rem; line-height: 1.45; }
+  .ba-typing {
+    display: flex; gap: 4px; align-items: center;
+    padding: 12px 14px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 16px;
+    border-bottom-left-radius: 4px; width: fit-content;
+  }
+  .ba-dot {
+    width: 7px; height: 7px; background: var(--accent);
+    border-radius: 50%; animation: ba-bounce .9s infinite;
+  }
+  .ba-dot:nth-child(2) { animation-delay: .15s; }
+  .ba-dot:nth-child(3) { animation-delay: .3s; }
+  @keyframes ba-bounce {
+    0%,60%,100% { transform: translateY(0); opacity:.4; }
+    30% { transform: translateY(-5px); opacity:1; }
+  }
 
-  .error-box {
-    background: rgba(239,68,68,.1);
-    border: 1px solid rgba(239,68,68,.3);
-    border-radius: 12px;
-    color: #fca5a5;
-    padding: 16px 20px;
-    font-size: 0.9rem;
+  #ba-input-area {
+    border-top: 1px solid var(--border); padding: 12px;
+    display: flex; gap: 8px; flex-shrink: 0; background: #080b14;
   }
+  #ba-input {
+    flex: 1; background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; color: var(--text); font-size: .88rem;
+    padding: 10px 14px; outline: none; transition: border-color .2s;
+  }
+  #ba-input:focus { border-color: var(--accent); }
+  #ba-input::placeholder { color: var(--muted); }
+  #ba-send {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; border-radius: 12px; color: #fff;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: opacity .15s; flex-shrink: 0;
+  }
+  #ba-send:hover { opacity: .85; }
+  #ba-send:disabled { opacity: .4; cursor: not-allowed; }
 
-  .empty {
-    text-align: center;
-    padding: 80px 0;
-    color: var(--muted);
+  @media(max-width:420px){
+    #ba-panel { width: calc(100vw - 24px); right: 12px; bottom: 88px; }
+    #ba-bubble { right: 16px; bottom: 16px; }
   }
-  .empty .icon { font-size: 3.5rem; opacity: .3; margin-bottom: 16px; }
-  .empty p { font-size: 1rem; }
-  .empty small { font-size: 0.82rem; opacity: .6; display: block; margin-top: 6px; }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <div class="logo-icon">&#128270;</div>
-    <h1>BILGI AVCISI</h1>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">CIHAN.DEV</div>
+  <div class="nav-links">
+    <a href="#about">Hakkimda</a>
+    <a href="#skills">Yetenekler</a>
+    <a href="#projects">Projeler</a>
+    <a href="#contact">Iletisim</a>
   </div>
-  <p>Web'i tarayarak istedigin bilgiyi bul</p>
-  <a href="index.html" class="back-link">&#8592; Ana Sayfaya Don</a>
-</header>
+</nav>
 
-<div class="search-wrapper">
-  <div class="search-box">
-    <input type="text" id="q" placeholder="Neyi ogrenimek istiyorsun?..." autocomplete="off" />
-    <button class="btn-search" id="searchBtn" onclick="search()">Ara &#8594;</button>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Yazilim Gelistirici</div>
+    <h1 class="hero-title">Merhaba, ben <span>Cihan</span></h1>
+    <p class="hero-desc">Web teknolojileri ve yapay zeka ile ilgilenen, modern projeler uretmeyi seven bir gelistiriciyim.</p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn-primary">Projelerimi Gor</a>
+      <a href="#contact" class="btn-outline">Iletisime Gec</a>
+    </div>
   </div>
-  <div class="chips">
-    <span class="chip" onclick="quick('yapay zeka nedir')">Yapay Zeka</span>
-    <span class="chip" onclick="quick('kuantum bilgisayar')">Kuantum Bilgisayar</span>
-    <span class="chip" onclick="quick('kara delik')">Kara Delik</span>
-    <span class="chip" onclick="quick('blockchain teknolojisi')">Blockchain</span>
-    <span class="chip" onclick="quick('Mars gezegeni')">Mars</span>
-    <span class="chip" onclick="quick('DNA nedir')">DNA</span>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="section-label">Hakkimda</div>
+    <h2 class="section-title">Kim Oldugumu Anla</h2>
+    <div class="about-grid">
+      <div>
+        <p class="section-desc">Yazilim dunyasina tutkuyla bagli, surekli ogrenmeye ve gelistirmeye odaklanan bir gelistiriciyim. Web'den yapay zekaya genis bir yelpazede projeler uretiyorum.</p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-card"><div class="stat-num">10+</div><div class="stat-label">Tamamlanan Proje</div></div>
+        <div class="stat-card"><div class="stat-num">3+</div><div class="stat-label">Yil Deneyim</div></div>
+        <div class="stat-card"><div class="stat-num">5+</div><div class="stat-label">Teknoloji</div></div>
+        <div class="stat-card"><div class="stat-num">100%</div><div class="stat-label">Tutku</div></div>
+      </div>
+    </div>
   </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-inner">
+    <div class="section-label">Yetenekler</div>
+    <h2 class="section-title">Kullandigim Teknolojiler</h2>
+    <div class="skills-grid">
+      <div class="skill-item"><div class="skill-icon">&#128187;</div><div class="skill-name">HTML/CSS</div></div>
+      <div class="skill-item"><div class="skill-icon">&#9889;</div><div class="skill-name">JavaScript</div></div>
+      <div class="skill-item"><div class="skill-icon">&#128013;</div><div class="skill-name">Python</div></div>
+      <div class="skill-item"><div class="skill-icon">&#9889;</div><div class="skill-name">React</div></div>
+      <div class="skill-item"><div class="skill-icon">&#128022;</div><div class="skill-name">Node.js</div></div>
+      <div class="skill-item"><div class="skill-icon">&#128202;</div><div class="skill-name">D3.js</div></div>
+      <div class="skill-item"><div class="skill-icon">&#129302;</div><div class="skill-name">Yapay Zeka</div></div>
+      <div class="skill-item"><div class="skill-icon">&#127760;</div><div class="skill-name">Web API</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-inner">
+    <div class="section-label">Projeler</div>
+    <h2 class="section-title">Neler Yaptim</h2>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-icon">&#127760;</div>
+        <div class="project-name">Dunya Haritasi</div>
+        <div class="project-desc">D3.js ile interaktif, gezginebilir dunya haritasi projesi.</div>
+        <div class="project-tags"><span class="ptag">D3.js</span><span class="ptag">TopoJSON</span><span class="ptag">JS</span></div>
+      </div>
+      <div class="project-card">
+        <div class="project-icon">&#128270;</div>
+        <div class="project-name">Bilgi Avcisi AI</div>
+        <div class="project-desc">Wikipedia ve web kaynaklarindan anlık bilgi toplayan AI chat widget.</div>
+        <div class="project-tags"><span class="ptag">AI</span><span class="ptag">Wikipedia API</span><span class="ptag">JS</span></div>
+      </div>
+      <div class="project-card">
+        <div class="project-icon">&#128640;</div>
+        <div class="project-name">Yeni Proje</div>
+        <div class="project-desc">Yakininda duyurulacak yeni bir proje uzerinde calisiyorum.</div>
+        <div class="project-tags"><span class="ptag">Yakininda</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="section-label">Iletisim</div>
+    <h2 class="section-title">Konusalim</h2>
+    <p class="section-desc">Bir proje fikrin var mi? Birlikte bir seyler uretmek ister misin? Mesaj gonderebilirsin.</p>
+    <div class="contact-links">
+      <a href="https://github.com" target="_blank" class="contact-link">&#128025; GitHub</a>
+      <a href="mailto:ornek@email.com" class="contact-link">&#9993;&#65039; E-Posta</a>
+      <a href="https://linkedin.com" target="_blank" class="contact-link">&#128188; LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>2026 &copy; Cihan &mdash; Sevgiyle yapildi</p>
+</footer>
+
+<!-- ==================== BILGI AVCISI CHAT WIDGET ==================== -->
+<div id="ba-bubble" onclick="toggleBA()" title="Bilgi Avcisi AI">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
 </div>
 
-<div class="results-wrapper" id="out">
-  <div class="empty">
-    <div class="icon">&#128270;</div>
-    <p>Bir konu yaz ve aramaya basla</p>
-    <small>Wikipedia ve web kaynaklarindan bilgi toplanir</small>
+<div id="ba-panel">
+  <div id="ba-header">
+    <div id="ba-header-left">
+      <div id="ba-avatar">&#128270;</div>
+      <div>
+        <div id="ba-title">Bilgi Avcisi</div>
+        <div id="ba-sub">Web'den bilgi topluyor</div>
+      </div>
+    </div>
+    <button id="ba-close" onclick="toggleBA()">&#x2715;</button>
+  </div>
+  <div id="ba-messages">
+    <div class="ba-msg ba-bot">
+      <div class="ba-bubble-msg">
+        Merhaba! &#128075; Merak ettigin herhangi bir konuyu sor, Wikipedia ve web'den bilgi toplayip sunayim.
+      </div>
+    </div>
+  </div>
+  <div id="ba-input-area">
+    <input type="text" id="ba-input" placeholder="Bir soru sor..." autocomplete="off" />
+    <button id="ba-send" onclick="baSearch()">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
   </div>
 </div>
 
 <script>
-const out = document.getElementById('out');
-const qInput = document.getElementById('q');
-const btn = document.getElementById('searchBtn');
-
-qInput.addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
-
-function quick(q) { qInput.value = q; search(); }
-
-async function search() {
-  const query = qInput.value.trim();
-  if (!query) return;
-  btn.disabled = true;
-  btn.textContent = 'Araniyor...';
-  out.innerHTML = `<div class="loading"><div class="spinner"></div><span>Araniyor: <strong>${esc(query)}</strong></span></div>`;
-
-  try {
-    const [wiki, ddg] = await Promise.allSettled([
-      fetchWikipedia(query),
-      fetchDDG(query)
-    ]);
-
-    let html = '';
-
-    if (wiki.status === 'fulfilled' && wiki.value) {
-      html += buildWikiCard(wiki.value);
-    }
-
-    if (ddg.status === 'fulfilled' && ddg.value && ddg.value.length > 0) {
-      html += `<div class="result-header"><span>&#128279; Web Sonuclari (${ddg.value.length})</span><span class="source-badge">DuckDuckGo</span></div>`;
-      ddg.value.forEach((r, i) => { html += buildCard(r, i + 1); });
-    }
-
-    if (!html) {
-      html = `<div class="error-box">Sonuc bulunamadi. Farkli bir kelime deneyin.</div>`;
-    }
-
-    out.innerHTML = html;
-  } catch(e) {
-    out.innerHTML = `<div class="error-box">Bir hata olustu: ${esc(e.message)}</div>`;
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Ara \u2192';
-  }
+function toggleBA(){
+  document.getElementById('ba-panel').classList.toggle('open');
+  document.getElementById('ba-bubble').classList.toggle('open');
 }
 
-async function fetchWikipedia(query) {
-  const lang = detectLang(query) ? 'tr' : 'en';
-  const url = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    const url2 = `https://tr.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=1&format=json&origin=*`;
-    const res2 = await fetch(url2);
-    const data2 = await res2.json();
-    if (data2[1] && data2[1][0]) {
-      const title = data2[1][0];
-      const res3 = await fetch(`https://tr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
-      if (res3.ok) return await res3.json();
-    }
-    return null;
-  }
-  return await res.json();
+document.getElementById('ba-input').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') baSearch();
+});
+
+function addMsg(html, type){
+  const msgs = document.getElementById('ba-messages');
+  const div = document.createElement('div');
+  div.className = 'ba-msg ba-' + type;
+  const inner = document.createElement('div');
+  inner.className = 'ba-bubble-msg';
+  inner.innerHTML = html;
+  div.appendChild(inner);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
-async function fetchDDG(query) {
-  const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
-  const proxy = `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
-  const res = await fetch(proxy);
-  const data = await res.json();
-  const results = [];
-  if (data.RelatedTopics) {
-    for (const t of data.RelatedTopics) {
-      if (t.FirstURL && t.Text) {
-        results.push({ title: t.Text.split(' - ')[0] || t.Text, url: t.FirstURL, desc: t.Text });
-        if (results.length >= 5) break;
-      }
-    }
-  }
-  return results;
+function addTyping(){
+  const msgs = document.getElementById('ba-messages');
+  const div = document.createElement('div');
+  div.className = 'ba-msg ba-bot';
+  div.id = 'ba-typing-ind';
+  div.innerHTML = '<div class="ba-typing"><div class="ba-dot"></div><div class="ba-dot"></div><div class="ba-dot"></div></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
-function detectLang(q) {
-  return /[ğüşıöçĞÜŞİÖÇ]/.test(q) || /\b(nedir|nasıl|ne|kim|hangi|kaç)\b/i.test(q);
+function removeTyping(){
+  const el = document.getElementById('ba-typing-ind');
+  if(el) el.remove();
 }
 
-function buildWikiCard(w) {
-  return `
-    <div class="wiki-section">
-      <div class="wiki-label">&#128218; Wikipedia Ozeti</div>
-      <div class="wiki-title">${esc(w.title || '')}</div>
-      <div class="wiki-text">${esc(w.extract || w.description || '')}</div>
-      ${w.content_urls ? `<a class="wiki-link" href="${esc(w.content_urls.desktop.page)}" target="_blank" rel="noopener">Wikipedia'da Tam Makaleyi Oku &#8599;</a>` : ''}
-    </div>`;
-}
-
-function buildCard(r, n) {
-  const hasDesc = r.desc && r.desc.length > 30;
-  return `
-    <div class="card">
-      <div class="card-top">
-        <div class="card-num">${n}</div>
-        <div style="min-width:0">
-          <div class="card-title"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a></div>
-          <div class="card-url">${esc(r.url)}</div>
-        </div>
-      </div>
-      ${hasDesc ? `<div class="card-desc">${esc(r.desc)}</div>` : ''}
-      <div class="tags"><span class="tag">Kaynak #${n}</span></div>
-    </div>`;
-}
-
-function esc(s) {
+function esc(s){
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+function isTR(q){ return /[ğüşıöçĞÜŞİÖÇ]/.test(q) || /\b(nedir|nasil|nasıl|kim|hangi|ne)\b/i.test(q); }
+
+async function fetchWiki(query){
+  const lang = isTR(query) ? 'tr' : 'en';
+  try {
+    let res = await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
+    if(!res.ok){
+      const r2 = await fetch(`https://tr.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=1&format=json&origin=*`);
+      const d2 = await r2.json();
+      if(d2[1]&&d2[1][0]){
+        const r3 = await fetch(`https://tr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(d2[1][0])}`);
+        if(r3.ok) return await r3.json();
+      }
+      return null;
+    }
+    return await res.json();
+  } catch(e){ return null; }
+}
+
+async function fetchDDG(query){
+  try {
+    const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+    const proxy = `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
+    const res = await fetch(proxy);
+    const data = await res.json();
+    const out = [];
+    if(data.RelatedTopics){
+      for(const t of data.RelatedTopics){
+        if(t.FirstURL&&t.Text){ out.push({title:t.Text.split(' - ')[0], url:t.FirstURL, desc:t.Text}); if(out.length>=4) break; }
+      }
+    }
+    return out;
+  } catch(e){ return []; }
+}
+
+async function baSearch(){
+  const inp = document.getElementById('ba-input');
+  const sendBtn = document.getElementById('ba-send');
+  const query = inp.value.trim();
+  if(!query) return;
+  inp.value = '';
+  sendBtn.disabled = true;
+  addMsg(esc(query), 'user');
+  addTyping();
+
+  const [wiki, ddg] = await Promise.allSettled([fetchWiki(query), fetchDDG(query)]);
+  removeTyping();
+
+  let html = '';
+
+  if(wiki.status==='fulfilled' && wiki.value && wiki.value.extract){
+    const w = wiki.value;
+    html += `<div class="ba-wiki-label">WIKIPEDIA</div><div class="ba-wiki-title">${esc(w.title)}</div><div class="ba-wiki-text">${esc(w.extract.substring(0,420))}${w.extract.length>420?'...':''}</div>`;
+    if(w.content_urls) html += `<a class="ba-wiki-link" href="${esc(w.content_urls.desktop.page)}" target="_blank" rel="noopener">Devamini Wikipedia'da oku &#8599;</a>`;
+  }
+
+  if(ddg.status==='fulfilled' && ddg.value && ddg.value.length>0){
+    if(html) html += '<hr style="border-color:#1e253a;margin:10px 0"/>';
+    html += `<div style="font-size:.76rem;color:#64748b;margin-bottom:6px">&#128279; Ilgili Kaynaklar</div>`;
+    ddg.value.forEach(r => {
+      html += `<div class="ba-result-item"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a><div class="ba-result-desc">${esc(r.desc.substring(0,100))}...</div></div>`;
+    });
+  }
+
+  if(!html) html = 'Sonuc bulunamadi. Farkli bir kelimeyle tekrar dene.';
+  addMsg(html, 'bot');
+  sendBtn.disabled = false;
+}
 </script>
+<!-- ==================== WIDGET SONU ==================== -->
+
 </body>
 </html>
